@@ -1,0 +1,40 @@
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e8]:
+      - img [ref=e9]
+      - heading "SmartERP" [level=2] [ref=e10]
+      - generic [ref=e12]: Your Company name incorrect
+      - generic: 
+      - generic [ref=e14]:
+        - generic [ref=e15]:
+          - generic [ref=e16]: Company name
+          - textbox "Company name Company name" [ref=e17]:
+            - /placeholder: Company name
+            - text: demo
+        - generic [ref=e18]:
+          - generic [ref=e19]: Username
+          - textbox "Username" [ref=e20]: Ahmed
+        - generic [ref=e21]:
+          - generic [ref=e22]: Password
+          - textbox "Password" [active] [ref=e23]
+        - button "Login" [disabled] [ref=e24]
+        - generic [ref=e25]:
+          - generic [ref=e26]:
+            - checkbox "Remember me" [checked] [ref=e28] [cursor=pointer]
+            - generic [ref=e30]: Remember me
+          - link "Forgot your password?" [ref=e31] [cursor=pointer]:
+            - /url: "#forgot_password"
+        - generic [ref=e32]:
+          - generic [ref=e33]: Don't have account?
+          - link "Register" [ref=e34] [cursor=pointer]:
+            - /url: https://smarterp.top/registration
+    - generic [ref=e35]:
+      - link "SmartLife | SmartERP" [ref=e36] [cursor=pointer]:
+        - /url: https://smartlife.ws
+      - listitem "Language" [ref=e39]:
+        - link "English" [ref=e40] [cursor=pointer]:
+          - /url: "#"
+    - text: 
+  - iframe [ref=e42]:
+    - button [ref=f5e2] [cursor=pointer]:
+      - img [ref=f5e3]

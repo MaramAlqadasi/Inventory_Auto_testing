@@ -1,0 +1,34 @@
+- generic [ref=e4]:
+  - generic [ref=e10]:
+    - img [ref=e11]
+    - heading "SmartERP" [level=2] [ref=e12]
+    - generic:   
+    - generic [ref=e14]:
+      - generic [ref=e15]:
+        - generic [ref=e16]: Company name
+        - textbox "Company name Company name Company name" [active] [ref=e17]:
+          - /placeholder: Company name
+      - generic [ref=e18]:
+        - generic [ref=e19]: Username
+        - textbox "Username" [ref=e20]
+      - generic [ref=e21]:
+        - generic [ref=e22]: Password
+        - textbox "Password" [ref=e23]
+      - button "Login" [disabled] [ref=e24]
+      - generic [ref=e25]:
+        - generic [ref=e26]:
+          - checkbox "Remember me" [checked] [ref=e28] [cursor=pointer]
+          - generic [ref=e30]: Remember me
+        - link "Forgot your password?" [ref=e31] [cursor=pointer]:
+          - /url: "#forgot_password"
+      - generic [ref=e32]:
+        - generic [ref=e33]: Don't have account?
+        - link "Register" [ref=e34] [cursor=pointer]:
+          - /url: https://smarterp.top/registration
+  - generic [ref=e35]:
+    - link "SmartLife | SmartERP" [ref=e36] [cursor=pointer]:
+      - /url: https://smartlife.ws/contact/
+    - listitem "Language" [ref=e39]:
+      - link "English" [ref=e40] [cursor=pointer]:
+        - /url: "#"
+  - text: 
