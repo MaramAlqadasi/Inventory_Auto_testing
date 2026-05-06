@@ -1,0 +1,12 @@
+[    6610ms] [INFO] Slow network is detected. See https://www.chromestatus.com/feature/5636954674692096 for more details. Fallback font will be used while loading: https://demo.smarterp.top/assets/library/fontAwesome/fonts/fontawesome-webfont.woff2?v=4.7.0 @ https://demo.smarterp.top/products/index:2727
+[    8070ms] [LOG] currentModule:  products @ https://demo.smarterp.top/products/index:3917
+[    9777ms] [LOG] Supplier @ https://demo.smarterp.top/assets/new_erp/v1.1.0/js/core.min.js?v=1:0
+[   28084ms] [WARNING] The resource https://demo.smarterp.top/assets/new_erp/v1.1.0/fonts/DinNextBold.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ about:blank:0
+[   28084ms] [WARNING] The resource https://demo.smarterp.top/assets/new_erp/v1.1.0/fonts/DinNextRegular.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ about:blank:0
+[  100274ms] [ERROR] Failed to load resource: the server responded with a status of 504 () @ https://demo.smarterp.top/:0
+[  101097ms] [ERROR] Failed to load resource: the server responded with a status of 504 () @ https://demo.smarterp.top/ajax/last_noti?i=0.22972380828455186&log_in=1:0
+[  101267ms] [ERROR] Failed to load resource: the server responded with a status of 504 () @ https://demo.smarterp.top//ajax/last_page?page=products/index&i=0.39858389685849527:0
+[  102083ms] [ERROR] Failed to load resource: the server responded with a status of 504 () @ https://demo.smarterp.top/chat/1?list=0.49791960155101533:0
+[  120262ms] [ERROR] Failed to load resource: the server responded with a status of 504 () @ https://demo.smarterp.top/:0
+[  123222ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://o113111.ingest.sentry.io/api/5264329/envelope/?sentry_key=a5f42b895f0f45b9804f529db1afd7ec&sentry_version=7:0
+[  123249ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://www.googletagmanager.com/gtag/js?id=G-7P5CKRSTC5:0

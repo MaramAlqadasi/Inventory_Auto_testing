@@ -1,0 +1,4 @@
+[    3574ms] [VERBOSE] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) %o @ https://demo.smarterp.top/login:0
+[   11328ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://o113111.ingest.sentry.io/api/5264329/envelope/?sentry_key=a5f42b895f0f45b9804f529db1afd7ec&sentry_version=7:0
+[   11359ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://www.googletagmanager.com/gtag/js?id=G-7P5CKRSTC5:0
+[  123155ms] [ERROR] Failed to load resource: the server responded with a status of 504 () @ https://demo.smarterp.top/welcome:0
