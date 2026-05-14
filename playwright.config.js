@@ -13,6 +13,7 @@ import { defineConfig, devices } from '@playwright/test';
  * @see https://playwright.dev/docs/test-configuration
  */
 export default defineConfig({
+  retries: process.env.CI ? 2 : 1,
   testDir: './tests',
   /* Run tests in files in parallel */
   fullyParallel: true,
