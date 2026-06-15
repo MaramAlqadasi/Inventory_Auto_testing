@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تقرير الاختبار الساكن (Static Testing) — وثيقة متطلبات الصلاحيات Sprint 1</title>
+<style>
+  :root{
+    --bg:#f4f6fb; --card:#ffffff; --ink:#1f2937; --muted:#64748b;
+    --brand:#1d4ed8; --brand2:#0f766e; --line:#e2e8f0;
+    --crit:#b91c1c; --critbg:#fee2e2; --high:#c2410c; --highbg:#ffedd5;
+    --med:#a16207; --medbg:#fef9c3; --low:#0369a1; --lowbg:#e0f2fe;
+    --ok:#15803d; --okbg:#dcfce7;
+  }
+  *{box-sizing:border-box}
+  body{font-family:"Segoe UI","Tahoma",sans-serif;background:var(--bg);color:var(--ink);margin:0;line-height:1.85;font-size:15px}
+  .wrap{max-width:1180px;margin:0 auto;padding:28px 20px 80px}
+  header.hero{background:linear-gradient(135deg,#1d4ed8,#0f766e);color:#fff;border-radius:18px;padding:34px 32px;box-shadow:0 12px 30px rgba(29,78,216,.25)}
+  header.hero h1{margin:0 0 6px;font-size:27px}
+  header.hero p{margin:4px 0;opacity:.95}
+  .meta-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-top:20px}
+  .meta-grid div{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);border-radius:12px;padding:12px 14px;font-size:13.5px}
+  .meta-grid b{display:block;font-size:12px;opacity:.85;margin-bottom:3px;font-weight:600}
+  section{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:26px 28px;margin-top:22px;box-shadow:0 4px 14px rgba(15,23,42,.04)}
+  h2{color:var(--brand);font-size:21px;border-bottom:3px solid var(--line);padding-bottom:10px;margin-top:0}
+  h3{color:var(--brand2);font-size:17px;margin-top:26px}
+  h4{font-size:15px;margin:18px 0 6px}
+  .toc{columns:2;column-gap:36px}
+  .toc a{color:var(--brand);text-decoration:none;display:block;padding:5px 0;border-bottom:1px dashed var(--line)}
+  .toc a:hover{color:var(--brand2)}
+  table{width:100%;border-collapse:collapse;margin:14px 0;font-size:13.5px;background:#fff}
+  th,td{border:1px solid var(--line);padding:9px 11px;text-align:right;vertical-align:top}
+  th{background:#eef2ff;color:#1e293b;font-weight:700}
+  tbody tr:nth-child(even){background:#f8fafc}
+  .pill{display:inline-block;padding:2px 10px;border-radius:999px;font-size:12px;font-weight:700;white-space:nowrap}
+  .p-crit{background:var(--critbg);color:var(--crit)} .p-high{background:var(--highbg);color:var(--high)}
+  .p-med{background:var(--medbg);color:var(--med)} .p-low{background:var(--lowbg);color:var(--low)}
+  .p-ok{background:var(--okbg);color:var(--ok)}
+  .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin:8px 0 4px}
+  .stat{border-radius:14px;padding:16px;text-align:center;border:1px solid var(--line)}
+  .stat .n{font-size:30px;font-weight:800;line-height:1}
+  .stat .l{font-size:12.5px;color:var(--muted);margin-top:6px}
+  .def{border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin:16px 0;border-right:6px solid var(--muted)}
+  .def.crit{border-right-color:var(--crit)} .def.high{border-right-color:var(--high)}
+  .def.med{border-right-color:var(--med)} .def.low{border-right-color:var(--low)}
+  .def .hd{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+  .def .hd .id{font-weight:800;color:var(--ink);font-size:15px}
+  .def .row{margin:6px 0}
+  .def .row b{color:var(--brand2)}
+  .tag{display:inline-block;background:#eef2ff;color:#3730a3;border-radius:8px;padding:1px 9px;font-size:11.5px;margin-inline-start:6px}
+  .quote{background:#f1f5f9;border-right:4px solid var(--brand);padding:8px 12px;border-radius:8px;font-size:13px;color:#334155;margin:6px 0}
+  .fix{background:var(--okbg);border-right:4px solid var(--ok);padding:8px 12px;border-radius:8px;font-size:13.5px;margin:6px 0}
+  ul{margin:8px 0;padding-inline-start:22px}
+  li{margin:4px 0}
+  code{background:#f1f5f9;padding:1px 6px;border-radius:5px;font-family:Consolas,monospace;direction:ltr;display:inline-block}
+  .note{background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:12px 14px;font-size:13.5px}
+  footer{text-align:center;color:var(--muted);font-size:12.5px;margin-top:30px}
+  .legend span{margin-inline-start:14px;font-size:12.5px}
+  @media(max-width:720px){.toc{columns:1}}
+  @media print{body{background:#fff}section{box-shadow:none;break-inside:avoid}header.hero{box-shadow:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <h1>تقرير الاختبار الساكن (Static Testing Report)</h1>
+  <p>مراجعة وثيقة مواصفات المتطلبات البرمجية (SRS) — تطوير نظام الصلاحيات / Sprint 1</p>
+  <p>الهدف: كشف الغموض والتناقضات والنواقص، وإنتاج تحليل مُصحَّح وواضح لبناء حالات اختبار على أساس سليم.</p>
+  <div class="meta-grid">
+    <div><b>المستند المُراجَع</b>الصلاحيات — SRS Sprint 1 V1.0 (24 صفحة)</div>
+    <div><b>نوع المراجعة</b>اختبار ساكن / مراجعة متطلبات (Requirements Review)</div>
+    <div><b>المُختبِر</b>مهندس ضمان جودة (QA Architect)</div>
+    <div><b>تاريخ المراجعة</b>15 يونيو 2026</div>
+    <div><b>المنتج</b>SmartERP — نظام تخطيط موارد المؤسسات</div>
+    <div><b>إجمالي الملاحظات</b>21 ملاحظة (Findings)</div>
+  </div>
+</header>
+
+<!-- ===== TOC ===== -->
+<section>
+  <h2>جدول المحتويات</h2>
+  <div class="toc">
+    <a href="#summary">1. الملخص التنفيذي</a>
+    <a href="#scope">2. نطاق المراجعة والمنهجية</a>
+    <a href="#stats">3. لوحة المؤشرات (Findings Dashboard)</a>
+    <a href="#defects">4. سجل الملاحظات التفصيلي (Defect Log)</a>
+    <a href="#matrix">5. مصفوفة الصلاحيات × القوائم (نقطة الغموض الأهم)</a>
+    <a href="#questions">6. أسئلة استيضاح لأصحاب المتطلبات</a>
+    <a href="#corrected">7. التحليل المُصحَّح والمُوضَّح للمتطلبات</a>
+    <a href="#nfr">8. مراجعة المتطلبات غير الوظيفية</a>
+    <a href="#traceability">9. مصفوفة التتبّع وحالة الجاهزية للاختبار</a>
+    <a href="#recommend">10. التوصيات النهائية</a>
+  </div>
+</section>
+
+<!-- ===== 1 SUMMARY ===== -->
+<section id="summary">
+  <h2>1. الملخص التنفيذي</h2>
+  <p>
+    خضعت وثيقة الـ SRS لمراجعة ساكنة منهجية على مستوى أقسامها الأربعة (المقدمة والنطاق، المتطلبات الوظيفية،
+    متطلبات الواجهة الخارجية، معايير القبول، المتطلبات غير الوظيفية). الوثيقة <b>جيدة من حيث التغطية والتفصيل</b>
+    (12 متطلباً وظيفياً مع معايير قبول مفصّلة)، لكنها تحتوي على <b>تناقضات حرجة في الترقيم والمصطلحات</b>
+    تمنع — في حالتها الحالية — بناء حالات اختبار موثوقة دون توضيح.
+  </p>
+  <p>أبرز ما تم رصده:</p>
+  <ul>
+    <li><b>خطأ حرج في التتبّع:</b> المعرّفان <code>FR-09</code> و<code>FR-10</code> مُبادَلان بين جدول المتطلبات الوظيفية وقسم معايير القبول (الحد الأقصى للدين مقابل عرض الأعمدة).</li>
+    <li><b>تناقض دلالي حرج:</b> صلاحية "<b>السماح</b> بتغيير كلمة المرور" تمنع التغيير عند تفعيلها — أي عكس مدلول اسمها، كما أن النطاق يسمّيها "<b>منع</b> تغيير كلمة المرور".</li>
+    <li><b>تعارض مصطلحات:</b> FR-01 يذكر "الكميات <b>السالبة</b>" بينما بقية الوثيقة تتحدث عن "الكميات <b>الصفرية</b>".</li>
+    <li><b>عدم اتساق القوائم:</b> قوائم الطباعة/التصدير/الإجماليات/الأعمدة مختلفة بين الأقسام، ولا توجد مصفوفة مرجعية موحّدة (صلاحية × قائمة).</li>
+    <li><b>متطلبات غير وظيفية غير قابلة للقياس:</b> الأداء/التوفر/سهولة الاستخدام مصاغة بعبارات عامة بلا حدود قياسية واضحة.</li>
+  </ul>
+  <div class="note"><b>الحكم العام:</b> الوثيقة <b>غير جاهزة للاختبار (Not Test-Ready)</b> حتى تُعالَج الملاحظات الحرجة (DEF-01، DEF-02) والعالية. بعد التصحيح المقترح في القسم 7 تصبح جاهزة لاشتقاق حالات الاختبار.</div>
+</section>
+
+<!-- ===== 2 SCOPE ===== -->
+<section id="scope">
+  <h2>2. نطاق المراجعة والمنهجية</h2>
+  <h4>النطاق</h4>
+  <ul>
+    <li>المقدمة، الغرض، نطاق التطوير، الافتراضات والتبعيات (أقسام 1.x).</li>
+    <li>المتطلبات الوظيفية FR-01 → FR-12 (قسم 2.1).</li>
+    <li>متطلبات الواجهة الخارجية / وصف الصلاحيات (قسم 2.2.1).</li>
+    <li>معايير القبول Acceptance Criteria (قسم 2.3).</li>
+    <li>المتطلبات غير الوظيفية NFR-01 → NFR-05 (قسم 2.4).</li>
+  </ul>
+  <h4>المنهجية ومعايير الفحص (Review Checklist)</h4>
+  <p>تم تطبيق معايير جودة المتطلبات المعتمدة (مستوحاة من IEEE 830 / ISO 29148):</p>
+  <table>
+    <thead><tr><th>المعيار</th><th>السؤال الرقابي</th></tr></thead>
+    <tbody>
+      <tr><td>عدم التناقض (Consistency)</td><td>هل تتفق الأقسام فيما بينها (الجدول، الوصف، معايير القبول)؟</td></tr>
+      <tr><td>عدم الغموض (Unambiguity)</td><td>هل يحتمل النص تفسيراً واحداً فقط؟</td></tr>
+      <tr><td>الاكتمال (Completeness)</td><td>هل القوائم/الحالات/الرسائل/الأدوار محددة بالكامل؟</td></tr>
+      <tr><td>القابلية للاختبار (Testability)</td><td>هل يمكن صياغة معيار نجاح/فشل قابل للقياس؟</td></tr>
+      <tr><td>القابلية للتتبّع (Traceability)</td><td>هل معرّفات المتطلبات فريدة ومتسقة عبر الوثيقة؟</td></tr>
+      <tr><td>الصحة (Correctness)</td><td>هل المنطق المذكور سليم وخالٍ من التعارض الداخلي؟</td></tr>
+    </tbody>
+  </table>
+  <div class="legend">
+    <b>مفتاح الخطورة:</b>
+    <span class="pill p-crit">حرجة Critical</span>
+    <span class="pill p-high">عالية High</span>
+    <span class="pill p-med">متوسطة Medium</span>
+    <span class="pill p-low">منخفضة Low</span>
+  </div>
+</section>
+
+<!-- ===== 3 STATS ===== -->
+<section id="stats">
+  <h2>3. لوحة المؤشرات (Findings Dashboard)</h2>
+  <div class="stat-grid">
+    <div class="stat" style="background:var(--critbg)"><div class="n" style="color:var(--crit)">2</div><div class="l">حرجة</div></div>
+    <div class="stat" style="background:var(--highbg)"><div class="n" style="color:var(--high)">6</div><div class="l">عالية</div></div>
+    <div class="stat" style="background:var(--medbg)"><div class="n" style="color:var(--med)">7</div><div class="l">متوسطة</div></div>
+    <div class="stat" style="background:var(--lowbg)"><div class="n" style="color:var(--low)">6</div><div class="l">منخفضة</div></div>
+    <div class="stat" style="background:#eef2ff"><div class="n" style="color:var(--brand)">21</div><div class="l">الإجمالي</div></div>
+  </div>
+  <h4>التوزيع حسب النوع</h4>
+  <table>
+    <thead><tr><th>نوع الملاحظة</th><th>العدد</th><th>المعرّفات</th></tr></thead>
+    <tbody>
+      <tr><td>تناقض / تعارض (Contradiction)</td><td>5</td><td>DEF-01, DEF-02, DEF-03, DEF-04, DEF-14</td></tr>
+      <tr><td>عدم اتساق (Inconsistency)</td><td>4</td><td>DEF-05, DEF-09, DEF-17, DEF-21</td></tr>
+      <tr><td>غموض (Ambiguity)</td><td>5</td><td>DEF-06, DEF-07, DEF-10, DEF-12, DEF-08</td></tr>
+      <tr><td>نقص (Missing / Incompleteness)</td><td>4</td><td>DEF-11, DEF-13, DEF-15, DEF-16</td></tr>
+      <tr><td>أخطاء تحريرية / Metadata</td><td>3</td><td>DEF-18, DEF-19, DEF-20</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ===== 4 DEFECTS ===== -->
+<section id="defects">
+  <h2>4. سجل الملاحظات التفصيلي (Defect Log)</h2>
+
+  <!-- DEF-01 -->
+  <div class="def crit">
+    <div class="hd"><span class="id">DEF-01 — مبادلة معرّفي FR-09 و FR-10</span><span class="pill p-crit">حرجة</span></div>
+    <div class="row"><span class="tag">تناقض</span><span class="tag">تتبّع</span><span class="tag">ص6 / ص20 / ص21</span></div>
+    <div class="row"><b>الوصف:</b> المعرّف <code>FR-09</code> في جدول المتطلبات الوظيفية = "التحكم في عرض الأعمدة"، و<code>FR-10</code> = "الحد الأقصى للدين". بينما في معايير القبول <code>FR-09</code> = "الحد الأقصى للدين" و<code>FR-10</code> = "عرض الأعمدة" — أي أن المعرّفين مُبادَلان.</div>
+    <div class="quote">جدول المتطلبات (ص6): «… عرض الأعمدة … <b>FR-09</b>» ، «… الحد الأقصى للدين … <b>FR-10</b>»<br>معايير القبول (ص20): «<b>FR09</b> … الحد الأقصى للدين» ، (ص21): «<b>FR-10</b> … عرض الأعمدة»</div>
+    <div class="row"><b>الأثر:</b> انهيار التتبّع بين المتطلب ومعيار قبوله؛ أي حالة اختبار مرتبطة بـ FR-09/FR-10 ستُسنَد للميزة الخاطئة.</div>
+    <div class="fix"><b>التصحيح المقترح:</b> توحيد الترقيم. قسم الواجهة الخارجية ومعايير القبول متفقان (الحد الأقصى للدين قبل عرض الأعمدة)، لذا يُعتمد: <b>FR-09 = الحد الأقصى للدين</b> و<b>FR-10 = عرض الأعمدة</b>، وتُصحَّح خلية جدول المتطلبات الوظيفية وفق ذلك.</div>
+  </div>
+
+  <!-- DEF-02 -->
+  <div class="def crit">
+    <div class="hd"><span class="id">DEF-02 — تناقض دلالي في صلاحية تغيير كلمة المرور (FR-11)</span><span class="pill p-crit">حرجة</span></div>
+    <div class="row"><span class="tag">تناقض</span><span class="tag">منطق</span><span class="tag">ص3(النطاق) / ص13 / ص22</span></div>
+    <div class="row"><b>الوصف:</b> الصلاحية مُسمّاة "<b>السماح بتغيير كلمة المرور</b>"، لكن عند تفعيلها <b>يُمنَع</b> المستخدم من التغيير وتُخفى الخيارات. هذا عكس مدلول الاسم تماماً. كما أن قسم النطاق (1.2) يسمّي الميزة "<b>منع تغيير كلمة المرور</b>" — فالاسم متناقض بين موضعين.</div>
+    <div class="quote">النطاق (ص3): «… مثل <b>منع تغيير كلمة المرور</b>.»<br>الواجهة (ص13): «… بعنوان <b>السماح بتغيير كلمة المرور</b> … عند تفعيلها … لا تظهر … ولا يمكنه تغيير كلمة مرور حسابه».</div>
+    <div class="row"><b>الأثر:</b> التباس شديد لدى المطوّر والمختبر والمستخدم النهائي؛ احتمال عكس المنطق برمجياً (تفعيل = سماح) فيتحول إلى خلل أمني/وظيفي.</div>
+    <div class="fix"><b>التصحيح المقترح:</b> إعادة تسمية الخيار إلى "<b>منع المستخدم من تغيير كلمة المرور</b>" (متسقاً مع النطاق ومع السلوك الفعلي: تفعيل = منع). أو الإبقاء على "السماح" مع عكس السلوك (تفعيل = سماح). يجب توحيد الاسم والسلوك في موضع واحد لا لبس فيه.</div>
+  </div>
+
+  <!-- DEF-03 -->
+  <div class="def high">
+    <div class="hd"><span class="id">DEF-03 — "الكميات السالبة" مقابل "الكميات الصفرية" (FR-01)</span><span class="pill p-high">عالية</span></div>
+    <div class="row"><span class="tag">تناقض مصطلحات</span><span class="tag">ص6 مقابل النطاق/الواجهة/القبول</span></div>
+    <div class="row"><b>الوصف:</b> جدول المتطلبات يصف FR-01 بأنه "البيع بالكميات <b>السالبة</b>"، بينما العنوان والنطاق وقسم الواجهة ومعايير القبول كلها تتحدث عن "الكميات <b>الصفرية</b>" (Zero quantity). الكمية السالبة والكمية الصفرية مفهومان مختلفان تماماً.</div>
+    <div class="quote">جدول المتطلبات (ص6): «… التحكم في البيع بالكميات <b>السالبة</b> … FR-01».<br>معايير القبول (ص14): «… بيع صنف <b>بكمية صفر</b> …».</div>
+    <div class="row"><b>الأثر:</b> غموض في تحديد السلوك المُختبَر؛ هل تُختبر قيم سالبة (<code>-5</code>) أم القيمة صفر (<code>0</code>) أم كلاهما؟ يؤثر مباشرة على تحليل القيم الحدّية (BVA).</div>
+    <div class="fix"><b>التصحيح المقترح:</b> توحيد المصطلح على "<b>الكميات الصفرية</b>" في جدول المتطلبات. وإن كان دعم الكميات السالبة مقصوداً فعلاً، يُفرَد كمتطلب مستقل بمعايير قبول خاصة.</div>
+  </div>
+
+  <!-- DEF-04 -->
+  <div class="def high">
+    <div class="hd"><span class="id">DEF-04 — تعارض منطق إخفاء زر الطباعة (FR-07)</span><span class="pill p-high">عالية</span></div>
+    <div class="row"><span class="tag">تناقض</span><span class="tag">ص11 مقابل ص19</span></div>
+    <div class="row"><b>الوصف:</b> وصف الواجهة يقول إنه "<b>عند إضافة الصلاحية</b> لقائمة معينة فإن زر الطباعة <b>يختفي</b> أيضاً من استعراض الفاتورة/السند" — وهذا عكس المنطق؛ المتوقّع أن يظهر الزر عند منح الصلاحية ويختفي عند غيابها. ومعيار القبول FR-07/5 يقول الصحيح: الإخفاء "<b>في حال عدم تفعيل الصلاحية</b>".</div>
+    <div class="quote">الواجهة (ص11): «وعند <b>إضافة</b> الصلاحية لقائمة معينة فإن زر الطباعة <b>يختفي</b> أيضاً من استعراض الفاتورة أو السند».<br>القبول (ص19) FR-07/5: «… بإخفاء زر الطباعة من شاشة استعراض السجل … <b>في حال عدم تفعيل الصلاحية</b>».</div>
+    <div class="row"><b>الأثر:</b> منطق متناقض بين موضعين لنفس المتطلب؛ احتمال تنفيذ سلوك معكوس.</div>
+    <div class="fix"><b>التصحيح المقترح:</b> تعديل نص الواجهة إلى: «في حال <b>عدم تفعيل</b> الصلاحية لقائمة معينة، يُخفى زر الطباعة من القائمة <b>ومن</b> شاشة استعراض الفاتورة/السند التابعة لها».</div>
+  </div>
+
+  <!-- DEF-05 -->
+  <div class="def high">
+    <div class="hd"><span class="id">DEF-05 — عدم اتساق قوائم التصدير (FR-08)</span><span class="pill p-high">عالية</span></div>
+    <div class="row"><span class="tag">عدم اتساق</span><span class="tag">ص6 مقابل ص11/ص19</span></div>
+    <div class="row"><b>الوصف:</b> جدول المتطلبات يحصر التصدير في <b>4 قوائم</b> (العملاء، الموردين، المبيعات، المشتريات)، بينما الواجهة ومعايير القبول تذكر <b>8 قوائم</b> (المبيعات، القيود، السندات، المشتريات، أوامر المشتريات، المصروفات، العملاء، الموردين).</div>
+    <div class="row"><b>الأثر:</b> غموض في عدد القوائم المطلوب اختبار صلاحية التصدير عليها (4 أم 8).</div>
+    <div class="fix"><b>التصحيح المقترح:</b> اعتماد قائمة الثماني الواردة في معايير القبول وتصحيح جدول المتطلبات، أو إثبات أن التصدير في Sprint 1 يقتصر على قوائم محددة.</div>
+  </div>
+
+  <!-- DEF-06 -->
+  <div class="def high">
+    <div class="hd"><span class="id">DEF-06 — غموض مفهوم "المجموعات السعرية" مقابل "أسعار المجموعات" (FR-02)</span><span class="pill p-high">عالية</span></div>
+    <div class="row"><span class="tag">غموض</span><span class="tag">ص3/ص6 مقابل ص7/ص15</span></div>
+    <div class="row"><b>الوصف:</b> الجدول والنطاق يستخدمان "<b>المجموعات السعرية</b>"، بينما الوصف ومعايير القبول يستخدمان "<b>أسعار المجموعات</b>" واسم القسم "أسعار المجموعات". المصطلحان قد يدلان على مفهومين مختلفين (تجميعات تسعير مقابل أسعار خاصة بمجموعات العملاء).</div>
+    <div class="row"><b>الأثر:</b> عدم وضوح الكيان موضع الصلاحية يؤثر على فهم الميزة وبناء بيانات الاختبار.</div>
+    <div class="fix"><b>التصحيح المقترح:</b> اعتماد مصطلح واحد موحّد عبر الوثيقة، مع تعريف موجز للكيان (ماهيته، موقعه في الواجهة، علاقته بالعملاء/الموردين).</div>
+  </div>
+
+  <!-- DEF-07 -->
+  <div class="def high">
+    <div class="hd"><span class="id">DEF-07 — تعارض "استقلال القوائم" مع الإخفاء العابر للأعمدة (FR-10)</span><span class="pill p-high">عالية</span></div>
+    <div class="row"><span class="tag">غموض</span><span class="tag">تعارض مبدأ</span><span class="tag">ص12 / ص21</span></div>
+    <div class="row"><b>الوصف:</b> ينص المتطلب على أن صلاحية الأعمدة <b>مستقلة لكل قائمة</b>، ثم ينص على أن إخفاء عمود (مثل رقم الهاتف) من "قائمة رئيسية" <b>يخفيه تلقائياً في جميع القوائم والتقارير المرتبطة</b> (نقاط البيع، تقارير المبيعات، تقارير العملاء). هذا أثر جانبي عام يتعارض مع مبدأ الاستقلال. كما أن مصطلح "<b>القوائم الرئيسية</b>" و"القوائم المرتبطة" غير معرّف، والقائمة مفتوحة بكلمة "<b>وغيرها/الخ</b>".</div>
+    <div class="row"><b>الأثر:</b> سلوك متشعّب وغير محدّد المدى → استحالة كتابة حالة اختبار قاطعة للنتيجة المتوقعة، واحتمال آثار ارتدادية واسعة (Regression).</div>
+    <div class="fix"><b>التصحيح المقترح:</b> الفصل بوضوح بين: (أ) <b>صلاحية</b> وصول المستخدم لقسم إظهار/إخفاء الأعمدة (مستقلة لكل قائمة)، و(ب) <b>إعداد</b> الإخفاء الذي يضبطه الأونر/الأدمن وينعكس على القوائم المرتبطة. وتعريف صريح لـ"القائمة الرئيسية" و"القوائم/التقارير المرتبطة" بها (جدول علاقات)، وإغلاق القائمة المفتوحة "الخ".</div>
+  </div>
+
+  <!-- DEF-08 -->
+  <div class="def high">
+    <div class="hd"><span class="id">DEF-08 — غياب مصفوفة موحّدة (صلاحية × قائمة)</span><span class="pill p-high">عالية</span></div>
+    <div class="row"><span class="tag">غموض</span><span class="tag">اكتمال</span><span class="tag">FR-05/07/08/10</span></div>
+    <div class="row"><b>الوصف:</b> القوائم المشمولة تختلف بين الصلاحيات دون مبرّر صريح: الإجماليات (6 قوائم بلا المبيعات!)، الطباعة (10 قوائم)، التصدير (8 قوائم)، الأعمدة (قائمة مفتوحة). لا توجد مصفوفة مرجعية تربط كل صلاحية بالقوائم التي تنطبق عليها.</div>
+    <div class="row"><b>الأثر:</b> صعوبة تحديد التغطية المطلوبة؛ خطر إغفال قوائم أو اختبار قوائم غير مقصودة. لافت: استبعاد "المبيعات" من صلاحية الإجماليات بينما تظهر في الطباعة والتصدير.</div>
+    <div class="fix"><b>التصحيح المقترح:</b> إضافة <b>مصفوفة الصلاحيات × القوائم</b> (انظر القسم 5) كمرجع وحيد للحقيقة (Single Source of Truth).</div>
+  </div>
+
+  <!-- DEF-09 -->
+  <div class="def med">
+    <div class="hd"><span class="id">DEF-09 — "التقارير" مذكورة في تمهيد الطباعة ومحذوفة من القائمة (FR-07)</span><span class="pill p-med">متوسطة</span></div>
+    <div class="row"><span class="tag">عدم اتساق</span><span class="tag">ص11 / ص19</span></div>
+    <div class="row"><b>الوصف:</b> تمهيد قسم الطباعة يذكر "… والمشتريات وأوامر المشتريات وقائمة المصروفات <b>والتقارير</b>"، لكن القائمة المرقّمة ومعيار القبول FR-07/2 لا يتضمنان "التقارير".</div>
+    <div class="fix"><b>التصحيح المقترح:</b> تحديد هل تشمل صلاحية الطباعة "التقارير" أم لا، وتوحيد التمهيد مع القائمة الفعلية.</div>
+  </div>
+
+  <!-- DEF-10 -->
+  <div class="def med">
+    <div class="hd"><span class="id">DEF-10 — خلط آليتين مختلفتين في FR-10</span><span class="pill p-med">متوسطة</span></div>
+    <div class="row"><span class="tag">غموض</span><span class="tag">ص12 / ص21</span></div>
+    <div class="row"><b>الوصف:</b> يخلط المتطلب بين "صلاحية تمكين المستخدم من التحكم في إظهار/إخفاء الأعمدة" (بنود 1–5) و"انعكاس إعداد الإخفاء الذي يضبطه الأونر/الأدمن على التقارير المرتبطة" (بنود 7–8). الآليتان مختلفتان وظيفياً.</div>
+    <div class="fix"><b>التصحيح المقترح:</b> فصلهما إلى متطلبين فرعيين واضحين (مرتبط بـ DEF-07).</div>
+  </div>
+
+  <!-- DEF-11 -->
+  <div class="def med">
+    <div class="hd"><span class="id">DEF-11 — غياب حدّ أعلى للخصم النسبي (FR-12)</span><span class="pill p-med">متوسطة</span></div>
+    <div class="row"><span class="tag">نقص</span><span class="tag">تحقق</span><span class="tag">ص13 / ص22</span></div>
+    <div class="row"><b>الوصف:</b> يحدّد المتطلب أن قيمة الخصم "رقمية أكبر من أو تساوي صفر"، لكن عند اختيار النوع "نسبة مئوية" لا يوجد حدّ أعلى منطقي (مثل 100%). يسمح النص ظاهرياً بإدخال نسبة 500%.</div>
+    <div class="row"><b>الأثر:</b> ثغرة في قواعد التحقق؛ نتائج خصم غير منطقية. مهم لتحليل القيم الحدّية.</div>
+    <div class="fix"><b>التصحيح المقترح:</b> إضافة قاعدة: عند النوع "نسبة مئوية" تكون القيمة ضمن <code>0–100</code>؛ عند "قيمة ثابتة" تكون <code>≥ 0</code> مع تحديد سقفها (مثلاً ≤ قيمة الصنف).</div>
+  </div>
+
+  <!-- DEF-12 -->
+  <div class="def med">
+    <div class="hd"><span class="id">DEF-12 — استثناء الأونر/الأدمن غير محدد في FR-11</span><span class="pill p-med">متوسطة</span></div>
+    <div class="row"><span class="tag">غموض</span><span class="tag">أدوار</span><span class="tag">ص22</span></div>
+    <div class="row"><b>الوصف:</b> أغلب المتطلبات تنص صراحة على بقاء صلاحيات الأونر/الأدمن الكاملة افتراضياً (FR-02/11، FR-05/8، FR-06/8…)، بينما FR-11 (منع تغيير كلمة المرور) لا يحدّد: هل يمكن تطبيق المنع على حساب أونر/أدمن؟ ومن يحقّ له ضبط الخيار ولمن؟</div>
+    <div class="fix"><b>التصحيح المقترح:</b> توضيح: من يملك ضبط الخيار، على أي أدوار يطبّق، وهل يُستثنى الأونر من المنع (تجنباً لقفل الحساب الأعلى).</div>
+  </div>
+
+  <!-- DEF-13 -->
+  <div class="def med">
+    <div class="hd"><span class="id">DEF-13 — غياب رسائل المستخدم لمعظم الميزات</span><span class="pill p-med">متوسطة</span></div>
+    <div class="row"><span class="tag">نقص</span><span class="tag">UX</span><span class="tag">عام</span></div>
+    <div class="row"><b>الوصف:</b> FR-01 وحده يحدّد نص رسالة صريح ("بيع الكميات الصفرية غير متاح على مستوى النظام"). بقية الحالات (تجاوز حدّ الخصم، حقل الدين للقراءة فقط، منع الحذف لوجود ارتباطات، منع الحفظ بلا صلاحية…) بلا نص رسالة محدّد.</div>
+    <div class="fix"><b>التصحيح المقترح:</b> إضافة جدول رسائل (نص الرسالة، النوع تنبيه/خطأ، شرط الظهور) لكل حالة منع.</div>
+  </div>
+
+  <!-- DEF-14 -->
+  <div class="def med">
+    <div class="hd"><span class="id">DEF-14 — FR-06 يغيّر سلوكاً قائماً (تعارض محتمل مع الافتراض)</span><span class="pill p-med">متوسطة</span></div>
+    <div class="row"><span class="tag">تعارض</span><span class="tag">ارتداد</span><span class="tag">ص4 / ص10 / ص18</span></div>
+    <div class="row"><b>الوصف:</b> يفترض القسم 1.3.1 "الحفاظ على سلوك النظام الحالي عند عدم تفعيل الصلاحيات الجديدة". لكن FR-06 يغيّر سلوكاً قائماً: حالياً "الإضافة دون الاستعراض" تُخفي الموديول، وسيصبح يعرضه بوضع مبسط. هذا تغيير على تركيبة صلاحيات موجودة قد تكون مفعّلة لمستخدمين حاليين.</div>
+    <div class="row"><b>الأثر:</b> خطر ارتداد على مستخدمين لديهم "إضافة بلا استعراض" مسبقاً؛ يتغير سلوكهم دون تفعيل صلاحية جديدة.</div>
+    <div class="fix"><b>التصحيح المقترح:</b> توضيح أثر الترحيل (Migration) على الحسابات القائمة، وتضمين اختبارات ارتداد لهذه التركيبة.</div>
+  </div>
+
+  <!-- DEF-15 -->
+  <div class="def med">
+    <div class="hd"><span class="id">DEF-15 — NFR-01 (الأداء) غير قابل للقياس</span><span class="pill p-med">متوسطة</span></div>
+    <div class="row"><span class="tag">نقص</span><span class="tag">قابلية اختبار</span><span class="tag">ص23</span></div>
+    <div class="row"><b>الوصف:</b> "يستجيب خلال أقل من 3–5 ثوانٍ" — مدى غامض (3 أم 5؟ وتحت أي حِمل؟)، و"آلاف المستخدمين المتزامنين" غير محدد العدد. لا توجد مقاييس P95/P99 أو معدل خطأ.</div>
+    <div class="fix"><b>التصحيح المقترح:</b> صياغة قابلة للقياس، مثل: «زمن استجابة P95 ≤ 3 ثوانٍ عند 2000 مستخدم متزامن، ومعدل خطأ < 1%».</div>
+  </div>
+
+  <!-- DEF-16 -->
+  <div class="def low">
+    <div class="hd"><span class="id">DEF-16 — بقية المتطلبات غير الوظيفية بلا معايير قبول قابلة للقياس</span><span class="pill p-low">منخفضة</span></div>
+    <div class="row"><span class="tag">نقص</span><span class="tag">ص23/24</span></div>
+    <div class="row"><b>الوصف:</b> NFR-03: "99.9" بلا علامة % ولا فترة قياس. NFR-04 (الموثوقية) وNFR-05 (سهولة الاستخدام: "عدد خطوات محدود"، "دعم لغتين" دون تسميتهما) عبارات عامة. لا توجد معايير قبول للـ NFRs مقابل وجودها للـ FRs.</div>
+    <div class="fix"><b>التصحيح المقترح:</b> إضافة معايير قبول قابلة للقياس لكل NFR (نسبة التوفر مع فترة القياس، تسمية اللغتين، حد أقصى لعدد الخطوات للمهام الرئيسية).</div>
+  </div>
+
+  <!-- DEF-17 -->
+  <div class="def low">
+    <div class="hd"><span class="id">DEF-17 — تنسيق المعرّف "FR09" بدون شرطة</span><span class="pill p-low">منخفضة</span></div>
+    <div class="row"><span class="tag">عدم اتساق</span><span class="tag">ص20</span></div>
+    <div class="row"><b>الوصف:</b> كُتب المعرّف <code>FR09</code> دون شرطة في معايير القبول، بينما البقية <code>FR-09</code>.</div>
+    <div class="fix"><b>التصحيح المقترح:</b> توحيد نمط الترقيم <code>FR-NN</code>.</div>
+  </div>
+
+  <!-- DEF-18 -->
+  <div class="def low">
+    <div class="hd"><span class="id">DEF-18 — خطأ إملائي/نحوي "يجب أن نتيح"</span><span class="pill p-low">منخفضة</span></div>
+    <div class="row"><span class="tag">تحريري</span><span class="tag">ص10</span></div>
+    <div class="row"><b>الوصف:</b> «… يجب أن <b>نتيح</b> للمستخدم …» والصواب «<b>يتيح</b>».</div>
+    <div class="fix"><b>التصحيح المقترح:</b> تصحيح إملائي.</div>
+  </div>
+
+  <!-- DEF-19 -->
+  <div class="def low">
+    <div class="hd"><span class="id">DEF-19 — بيانات الغلاف ناقصة (Metadata)</span><span class="pill p-low">منخفضة</span></div>
+    <div class="row"><span class="tag">تحريري</span><span class="tag">ص1/ص2</span></div>
+    <div class="row"><b>الوصف:</b> حقول "UPDATE DATE" و"VERSION DATE" فارغة/Placeholder في الغلاف، وسجل الإصدارات/الموافقات غير مكتمل (مراجعة/إشراف/إعداد بلا تواريخ وتوقيعات).</div>
+    <div class="fix"><b>التصحيح المقترح:</b> استكمال بيانات الإصدار وسجل التغييرات (Revision History).</div>
+  </div>
+
+  <!-- DEF-20 -->
+  <div class="def low">
+    <div class="hd"><span class="id">DEF-20 — الاستيراد من شاشة الصنف غير مغطّى في القبول (FR-03/FR-04)</span><span class="pill p-low">منخفضة</span></div>
+    <div class="row"><span class="tag">نقص</span><span class="tag">ص8/ص9 مقابل ص16/ص17</span></div>
+    <div class="row"><b>الوصف:</b> الوصف يتيح "إضافة وحدة/فئة" من زر داخل شاشة إضافة/تحرير/نسخ صنف، ومعايير القبول تغطي الإضافة فقط (FR-03/8، FR-04/8) دون التطرق لإمكانية الاستيراد من تلك الشاشة.</div>
+    <div class="fix"><b>التصحيح المقترح:</b> توضيح هل الاستيراد متاح من شاشة الصنف أم من قسم المخزون فقط.</div>
+  </div>
+
+  <!-- DEF-21 -->
+  <div class="def low">
+    <div class="hd"><span class="id">DEF-21 — وصف مختزل لصلاحيات أسعار المجموعات (FR-02)</span><span class="pill p-low">منخفضة</span></div>
+    <div class="row"><span class="tag">عدم اتساق</span><span class="tag">ص8</span></div>
+    <div class="row"><b>الوصف:</b> يقول الوصف «يمكن للمستخدم المفعّلة له الصلاحية <b>إضافة واستعراض</b> أسعار المجموعات» فقط، بينما القسم يعرّف 6 صلاحيات (استعراض/إضافة/تعديل/حذف/أسعار أصناف المجموعة/عرض أصناف المجموعة).</div>
+    <div class="fix"><b>التصحيح المقترح:</b> مواءمة الجملة الموجزة مع قائمة الصلاحيات الست الكاملة.</div>
+  </div>
+</section>
+
+<!-- ===== 5 MATRIX ===== -->
+<section id="matrix">
+  <h2>5. مصفوفة الصلاحيات × القوائم (معالجة DEF-08)</h2>
+  <p>المصفوفة التالية تجمّع القوائم المشمولة بكل صلاحية كما وردت في الوثيقة، وتُبرز الفجوات (؟) التي تحتاج تأكيداً. تُعتمد بعد المراجعة كمرجع وحيد لاشتقاق حالات الاختبار.</p>
+  <table>
+    <thead>
+      <tr>
+        <th>القائمة</th>
+        <th>إجماليات<br>(FR-05)</th>
+        <th>طباعة<br>(FR-07)</th>
+        <th>تصدير Excel/PDF<br>(FR-08)</th>
+        <th>عرض الأعمدة<br>(FR-10)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>المبيعات</td><td>؟ (مستبعدة)</td><td>✔</td><td>✔</td><td>✔</td></tr>
+      <tr><td>مبيعات نقاط البيع</td><td>—</td><td>✔</td><td>؟</td><td>؟</td></tr>
+      <tr><td>المشتريات</td><td>—</td><td>✔</td><td>✔</td><td>✔</td></tr>
+      <tr><td>أوامر المشتريات / الشراء</td><td>✔ (أوامر الشراء)</td><td>✔</td><td>✔</td><td>؟</td></tr>
+      <tr><td>طلبات المشتريات</td><td>—</td><td>✔</td><td>؟</td><td>؟</td></tr>
+      <tr><td>فواتير المشتريات</td><td>✔</td><td>؟</td><td>؟</td><td>؟</td></tr>
+      <tr><td>المشتريات الخارجية</td><td>—</td><td>؟</td><td>؟</td><td>✔</td></tr>
+      <tr><td>عروض الأسعار</td><td>✔</td><td>؟</td><td>؟</td><td>؟</td></tr>
+      <tr><td>الفواتير الدورية</td><td>✔</td><td>؟</td><td>؟</td><td>✔</td></tr>
+      <tr><td>المرتجعات</td><td>✔</td><td>؟</td><td>؟</td><td>؟</td></tr>
+      <tr><td>القيود</td><td>—</td><td>✔</td><td>✔</td><td>✔</td></tr>
+      <tr><td>السندات</td><td>—</td><td>✔</td><td>✔</td><td>✔</td></tr>
+      <tr><td>المصروفات</td><td>✔</td><td>✔</td><td>✔</td><td>؟</td></tr>
+      <tr><td>العملاء</td><td>—</td><td>✔</td><td>✔</td><td>✔</td></tr>
+      <tr><td>الموردين</td><td>—</td><td>✔</td><td>✔</td><td>✔</td></tr>
+      <tr><td>الأصناف</td><td>—</td><td>؟</td><td>؟</td><td>✔</td></tr>
+      <tr><td>الأقساط</td><td>—</td><td>؟</td><td>؟</td><td>✔</td></tr>
+      <tr><td>تحويل المخزون</td><td>—</td><td>؟</td><td>؟</td><td>✔</td></tr>
+      <tr><td>التقارير</td><td>—</td><td>؟ (DEF-09)</td><td>—</td><td>✔</td></tr>
+    </tbody>
+  </table>
+  <div class="note">
+    <b>المفتاح:</b> ✔ مذكورة صراحة · — غير مذكورة (يُفترض خارج النطاق) · ؟ تحتاج تأكيداً.<br>
+    أبرز نقاط التأكيد: استبعاد "المبيعات" من الإجماليات (متعمّد؟)، تعارض "التقارير" في الطباعة، وانفتاح قائمة الأعمدة بكلمة "الخ".
+  </div>
+</section>
+
+<!-- ===== 6 QUESTIONS ===== -->
+<section id="questions">
+  <h2>6. أسئلة استيضاح لأصحاب المتطلبات</h2>
+  <table>
+    <thead><tr><th>#</th><th>السؤال</th><th>مرتبط بـ</th></tr></thead>
+    <tbody>
+      <tr><td>Q1</td><td>أي ترقيم يُعتمد لـ FR-09/FR-10؟ (نقترح: FR-09 = الحد الأقصى للدين، FR-10 = عرض الأعمدة).</td><td>DEF-01</td></tr>
+      <tr><td>Q2</td><td>الاسم النهائي لصلاحية كلمة المرور: "منع تغيير" أم "السماح بتغيير"؟ وما السلوك عند التفعيل؟</td><td>DEF-02</td></tr>
+      <tr><td>Q3</td><td>FR-01: هل المقصود الكميات الصفرية فقط أم تشمل السالبة أيضاً؟</td><td>DEF-03</td></tr>
+      <tr><td>Q4</td><td>"المجموعات السعرية" و"أسعار المجموعات": مفهوم واحد أم مفهومان؟ ما تعريف الكيان بدقة؟</td><td>DEF-06</td></tr>
+      <tr><td>Q5</td><td>عرض الأعمدة: ما تعريف "القائمة الرئيسية" وما خريطة "القوائم/التقارير المرتبطة" بها؟</td><td>DEF-07, DEF-10</td></tr>
+      <tr><td>Q6</td><td>هل تشمل صلاحية الطباعة "التقارير"؟ وما القائمة النهائية الموحّدة لكل صلاحية (المصفوفة)؟</td><td>DEF-08, DEF-09</td></tr>
+      <tr><td>Q7</td><td>لماذا استُبعدت "المبيعات" من صلاحية عرض الإجماليات؟ هل هذا مقصود؟</td><td>DEF-08</td></tr>
+      <tr><td>Q8</td><td>هل للخصم النسبي حدّ أعلى (100%)؟ وما سقف الخصم الثابت؟</td><td>DEF-11</td></tr>
+      <tr><td>Q9</td><td>من يضبط صلاحية كلمة المرور ولأي أدوار؟ هل يُستثنى الأونر من المنع؟</td><td>DEF-12</td></tr>
+      <tr><td>Q10</td><td>ما النصوص المعتمدة لرسائل المنع/التنبيه في كل ميزة؟</td><td>DEF-13</td></tr>
+      <tr><td>Q11</td><td>ما أثر FR-06 على المستخدمين الحاليين الذين لديهم "إضافة بلا استعراض"؟ هل هناك ترحيل؟</td><td>DEF-14</td></tr>
+      <tr><td>Q12</td><td>ما القيم القياسية للأداء/التوفر (عدد المستخدمين، P95، نسبة التوفر وفترتها، اللغتان)؟</td><td>DEF-15, DEF-16</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ===== 7 CORRECTED ===== -->
+<section id="corrected">
+  <h2>7. التحليل المُصحَّح والمُوضَّح للمتطلبات</h2>
+  <p>إعادة صياغة موحّدة لكل متطلب بعد معالجة الملاحظات، لتكون أساساً مباشراً لاشتقاق حالات الاختبار. (المعرّفات هنا مُصحّحة وفق التوصية في DEF-01).</p>
+
+  <h3>FR-01 — صلاحية البيع بالكميات الصفرية (موديول المبيعات)</h3>
+  <ul>
+    <li>صلاحية جديدة "البيع بالكميات الصفرية" ضمن ضوابط وصلاحيات المجموعات.</li>
+    <li>تعتمد على إعداد النظام "السماح ببيع الأصناف التي كمياتها صفر" (عمليات الأصناف). جدول الحالات:</li>
+  </ul>
+  <table>
+    <thead><tr><th>إعداد النظام (صفري)</th><th>الصلاحية (للمجموعة)</th><th>النتيجة</th></tr></thead>
+    <tbody>
+      <tr><td>مفعّل</td><td>غير مفعّلة</td><td>متاح للأدمن والأونر فقط</td></tr>
+      <tr><td>مفعّل</td><td>مفعّلة</td><td>متاح للأدمن والأونر + مستخدمي المجموعة</td></tr>
+      <tr><td>غير مفعّل</td><td>مفعّلة</td><td>ممنوع + رسالة: «بيع الكميات الصفرية غير متاح على مستوى النظام»</td></tr>
+      <tr><td>غير مفعّل</td><td>غير مفعّلة</td><td>ممنوع للجميع (عدا الأدمن/الأونر حسب الإعداد)</td></tr>
+    </tbody>
+  </table>
+  <p>يطبّق التحقق عند إضافة صنف للفاتورة وعند تعديل الكمية، وفي جميع واجهات البيع.</p>
+
+  <h3>FR-02 — صلاحيات أسعار المجموعات (تاب العملاء والموردين)</h3>
+  <ul>
+    <li>قسم جديد "أسعار المجموعات"؛ يتيح لغير الأدمن/الأونر إدارة الأسعار وفق الصلاحيات.</li>
+    <li>6 صلاحيات مستقلة: استعراض · إضافة · تعديل · حذف · إدارة أسعار أصناف المجموعة · عرض أصناف المجموعة.</li>
+    <li>تطبَّق القيود الحالية على الحذف/التعديل (الارتباط بعملاء/عمليات قائمة…).</li>
+    <li>الأدمن/الأونر يحتفظان بكامل الصلاحيات افتراضياً.</li>
+  </ul>
+
+  <h3>FR-03 / FR-04 — صلاحيات الوحدات والفئات (موديول المخزون)</h3>
+  <ul>
+    <li>قسمان جديدان "الوحدات" و"الفئات"؛ كل منهما 5 صلاحيات: استعراض · إضافة · تعديل · حذف · استيراد (مستقلة لكل مجموعة).</li>
+    <li>الإضافة متاحة أيضاً من زر داخل شاشة إضافة/تحرير/نسخ صنف. (يلزم تأكيد إتاحة الاستيراد من هذه الشاشة — DEF-20).</li>
+    <li>منع الحذف عند وجود ارتباطات. الاستعراض فقط عند عدم توفر صلاحيات أخرى.</li>
+  </ul>
+
+  <h3>FR-05 — صلاحية عرض الإجماليات</h3>
+  <ul>
+    <li>مستقلة لكل قائمة من: عروض الأسعار · أوامر الشراء · فواتير المشتريات · الفواتير الدورية · المرتجعات · المصروفات.</li>
+    <li>الإخفاء يقتصر على القيم الإجمالية دون التأثير على استعراض السجلات. الأدمن/الأونر يرونها افتراضياً.</li>
+    <li><b>للتأكيد:</b> سبب استبعاد "المبيعات" (DEF-08).</li>
+  </ul>
+
+  <h3>FR-06 — صلاحية إضافة فاتورة بيع مباشرة</h3>
+  <ul>
+    <li>عند "الإضافة فقط" (دون الاستعراض): يُعرض الموديول بوضع مبسط (زر "إضافة فاتورة بيع جديدة" فقط) بدلاً من إخفائه.</li>
+    <li>الدخول مباشرةً لشاشة الإنشاء دون عرض قائمة المبيعات أو بياناتها.</li>
+    <li><b>للتأكيد:</b> أثر الترحيل على المستخدمين الحاليين بهذه التركيبة (DEF-14).</li>
+  </ul>
+
+  <h3>FR-07 — صلاحية عرض زر الطباعة</h3>
+  <ul>
+    <li>مستقلة لكل قائمة: القيود · السندات · العملاء · الموردين · المبيعات · مبيعات نقاط البيع · المشتريات · أوامر المشتريات · طلبات المشتريات · المصروفات. (شمول "التقارير" قيد التأكيد — DEF-09).</li>
+    <li><b>عند عدم</b> تفعيل الصلاحية: يُخفى الزر من القائمة <b>ومن</b> شاشة استعراض الفاتورة/السند (تصحيح DEF-04).</li>
+  </ul>
+
+  <h3>FR-08 — صلاحية التصدير (Excel / PDF)</h3>
+  <ul>
+    <li>مستقلة لكل قائمة (المعتمد: 8 قوائم): المبيعات · القيود · السندات · المشتريات · أوامر المشتريات · المصروفات · العملاء · الموردين (تصحيح DEF-05).</li>
+    <li>إخفاء خيارات التصدير عند عدم التفعيل، مع التحقق عند تحميل القائمة.</li>
+  </ul>
+
+  <h3>FR-09 — صلاحية الحد الأقصى للدين (تاب العملاء والموردين) <span class="tag">معرّف مُصحَّح</span></h3>
+  <ul>
+    <li>عند التفعيل: يضيف/يعدّل المستخدم قيمة الحد الأقصى للدين.</li>
+    <li>عند عدم التفعيل: يُعرض الحقل للقراءة فقط، ويُمنع حفظ أي تعديل.</li>
+    <li>التحقق عند تحميل صفحة العميل وعند الحفظ.</li>
+  </ul>
+
+  <h3>FR-10 — صلاحية عرض الأعمدة <span class="tag">معرّف مُصحَّح</span></h3>
+  <ul>
+    <li><b>(أ) صلاحية المستخدم:</b> الوصول لقسم إظهار/إخفاء الأعمدة، مستقلة لكل قائمة (تُغلَق القائمة المفتوحة "الخ" بقائمة نهائية محددة).</li>
+    <li><b>(ب) إعداد الأونر/الأدمن:</b> إخفاء عمود في "قائمة رئيسية" ينعكس على "القوائم/التقارير المرتبطة" — يلزم جدول علاقات صريح (DEF-07, DEF-10).</li>
+    <li>عند عدم التفعيل: يُخفى القسم وتُعرض الأعمدة الافتراضية التي حدّدها الأونر/الأدمن.</li>
+  </ul>
+
+  <h3>FR-11 — منع تغيير كلمة المرور (إعدادات المستخدم) <span class="tag">يحتاج توحيد اسم/سلوك</span></h3>
+  <ul>
+    <li>خيار (Check Box) عند إضافة/تحرير مستخدم. القيمة الافتراضية: يستطيع المستخدم تغيير كلمته.</li>
+    <li>عند تفعيل المنع: تُخفى خيارات تغيير كلمة المرور ويُمنع التغيير من جميع المسارات.</li>
+    <li><b>للتأكيد قبل الاختبار:</b> الاسم النهائي والسلوك (DEF-02)، ومن يضبطه ولأي أدوار واستثناء الأونر (DEF-12).</li>
+  </ul>
+
+  <h3>FR-12 — التحكم في الخصم على مستوى الصنف لكل مستخدم</h3>
+  <ul>
+    <li>أسفل "السماح بالخصم": حقل "الخصم المسموح به على مستوى الصنف" + نوع الخصم (نسبة مئوية / قيمة ثابتة) + قيمة (≥ 0).</li>
+    <li>يعتمد على إعداد النظام "تمكين الخصم على مستوى الصنف"؛ إن كان معطّلاً يُعرض الحقل معطّلاً في الفاتورة.</li>
+    <li>يطبَّق التحقق في جميع قنوات البيع (المبيعات، نقاط البيع، نقاط البيع أوفلاين، الفواتير الدورية).</li>
+    <li><b>للتأكيد:</b> الحد الأعلى للنسبة المئوية وسقف القيمة الثابتة (DEF-11).</li>
+  </ul>
+</section>
+
+<!-- ===== 8 NFR ===== -->
+<section id="nfr">
+  <h2>8. مراجعة المتطلبات غير الوظيفية (NFR)</h2>
+  <table>
+    <thead><tr><th>المعرّف</th><th>النص الحالي</th><th>المشكلة</th><th>صياغة مقترحة قابلة للقياس</th></tr></thead>
+    <tbody>
+      <tr><td>NFR-01 الأداء</td><td>استجابة أقل من 3–5 ثوانٍ، آلاف المستخدمين المتزامنين</td><td>مدى غامض، حِمل غير محدد، لا مقاييس P95/P99</td><td>P95 ≤ 3 ثوانٍ عند N مستخدم متزامن، معدل خطأ < 1%</td></tr>
+      <tr><td>NFR-02 الأمان</td><td>تشفير، صلاحيات دقيقة، تسجيل الأنشطة</td><td>مقبول كمبدأ لكن بلا معايير تحقق</td><td>تحديد خوارزمية التشفير، سياسة التدقيق (Audit Log)، اختبارات صلاحيات سلبية</td></tr>
+      <tr><td>NFR-03 التوفر</td><td>"99.9" مع نسخ احتياطي وتعافٍ</td><td>علامة % مفقودة، لا فترة قياس، لا RTO/RPO</td><td>توفر ≥ 99.9% شهرياً، RTO ≤ X، RPO ≤ Y</td></tr>
+      <tr><td>NFR-04 الموثوقية</td><td>دقة العمليات وحفظ البيانات دون فقدان</td><td>غير قابل للقياس</td><td>0 فقدان بيانات مؤكَّد عند الانقطاع؛ معيار اتساق المعاملات</td></tr>
+      <tr><td>NFR-05 سهولة الاستخدام</td><td>واجهة بديهية، خطوات محدودة، دعم لغتين</td><td>"محدودة" غير معرّفة، اللغتان غير مسمّاتين</td><td>إتمام المهام الرئيسية ضمن ≤ K خطوات؛ دعم العربية والإنجليزية صراحة</td></tr>
+    </tbody>
+  </table>
+  <div class="note">ملاحظة: المتطلبات غير الوظيفية تفتقر إلى معايير قبول مقابل وجودها للوظيفية — يُنصح بإضافة AC لكل NFR.</div>
+</section>
+
+<!-- ===== 9 TRACEABILITY ===== -->
+<section id="traceability">
+  <h2>9. مصفوفة التتبّع وحالة الجاهزية للاختبار</h2>
+  <table>
+    <thead><tr><th>المتطلب (مُصحَّح)</th><th>الميزة</th><th>معايير قبول؟</th><th>ملاحظات مفتوحة</th><th>الجاهزية للاختبار</th></tr></thead>
+    <tbody>
+      <tr><td>FR-01</td><td>البيع بالكميات الصفرية</td><td>✔ (9)</td><td>DEF-03</td><td><span class="pill p-med">بعد توضيح بسيط</span></td></tr>
+      <tr><td>FR-02</td><td>أسعار المجموعات</td><td>✔ (11)</td><td>DEF-06, DEF-21</td><td><span class="pill p-med">بعد توضيح</span></td></tr>
+      <tr><td>FR-03</td><td>الوحدات</td><td>✔ (10)</td><td>DEF-20</td><td><span class="pill p-ok">جاهز تقريباً</span></td></tr>
+      <tr><td>FR-04</td><td>الفئات</td><td>✔ (10)</td><td>DEF-20</td><td><span class="pill p-ok">جاهز تقريباً</span></td></tr>
+      <tr><td>FR-05</td><td>عرض الإجماليات</td><td>✔ (8)</td><td>DEF-08</td><td><span class="pill p-med">بعد توضيح</span></td></tr>
+      <tr><td>FR-06</td><td>فاتورة بيع مباشرة</td><td>✔ (8)</td><td>DEF-14</td><td><span class="pill p-med">بعد توضيح</span></td></tr>
+      <tr><td>FR-07</td><td>زر الطباعة</td><td>✔ (7)</td><td>DEF-04, DEF-09</td><td><span class="pill p-high">يلزم تصحيح</span></td></tr>
+      <tr><td>FR-08</td><td>التصدير Excel/PDF</td><td>✔ (6)</td><td>DEF-05</td><td><span class="pill p-high">يلزم تصحيح</span></td></tr>
+      <tr><td>FR-09</td><td>الحد الأقصى للدين</td><td>✔ (5)</td><td>DEF-01</td><td><span class="pill p-high">يلزم تصحيح الترقيم</span></td></tr>
+      <tr><td>FR-10</td><td>عرض الأعمدة</td><td>✔ (8)</td><td>DEF-01, DEF-07, DEF-10</td><td><span class="pill p-crit">غير جاهز</span></td></tr>
+      <tr><td>FR-11</td><td>كلمة المرور</td><td>✔ (7)</td><td>DEF-02, DEF-12</td><td><span class="pill p-crit">غير جاهز</span></td></tr>
+      <tr><td>FR-12</td><td>الخصم على مستوى الصنف</td><td>✔ (11)</td><td>DEF-11</td><td><span class="pill p-med">بعد توضيح</span></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ===== 10 RECOMMEND ===== -->
+<section id="recommend">
+  <h2>10. التوصيات النهائية</h2>
+  <ol>
+    <li><b>إيقاف اشتقاق حالات الاختبار</b> للمتطلبات FR-10 وFR-11 حتى تُعالَج الملاحظتان الحرجتان (DEF-01، DEF-02).</li>
+    <li><b>توحيد الترقيم والمصطلحات</b> عبر الوثيقة (FR-09/10، السالبة/الصفرية، المجموعات السعرية/أسعار المجموعات، نمط FR-NN).</li>
+    <li><b>اعتماد مصفوفة الصلاحيات × القوائم</b> (القسم 5) كمرجع وحيد، وإغلاق كل القوائم المفتوحة بكلمة "الخ/وغيرها".</li>
+    <li><b>إضافة جدول رسائل المستخدم</b> لكل حالات المنع/التحقق (DEF-13).</li>
+    <li><b>تحويل المتطلبات غير الوظيفية إلى صيغ قابلة للقياس</b> مع معايير قبول (DEF-15، DEF-16).</li>
+    <li><b>تضمين اختبارات ارتداد (Regression)</b> خصوصاً لتغيير سلوك "الإضافة بلا استعراض" (FR-06) والإخفاء العابر للأعمدة (FR-10).</li>
+    <li><b>تخصيص اختبارات صلاحيات سلبية</b> لكل ميزة: محاولة تنفيذ العملية دون الصلاحية، وتجاوز الواجهة عبر مسارات بديلة (طبقة الأمان NFR-02).</li>
+    <li><b>إعادة تدوير الوثيقة كـ V1.1</b> بعد الإجابة على أسئلة القسم 6، ثم اعتمادها للانتقال لمرحلة تصميم حالات الاختبار.</li>
+  </ol>
+</section>
+
+<footer>
+  أُنتج هذا التقرير عبر مراجعة ساكنة منهجية لوثيقة الـ SRS — Sprint 1 (نظام الصلاحيات / SmartERP) · 15 يونيو 2026
+</footer>
+
+</div>
+</body>
+</html>
