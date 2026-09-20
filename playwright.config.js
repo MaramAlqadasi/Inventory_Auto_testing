@@ -1,82 +1,81 @@
 // @ts-check
 import { defineConfig, devices } from '@playwright/test';
+import dotenv from 'dotenv';
+import path from 'path';
+
+dotenv.config({ path: path.resolve(__dirname, '.env') });
 
 /**
- * Read environment variables from file.
- * https://github.com/motdotla/dotenv
+ * baseURL = أصل الموقع مشتقّاً من BASE_URL (الذي يشير لصفحة الدخول).
+ * يتيح استخدام مسارات نسبية في الاختبارات: page.goto('/products/index').
  */
-// import dotenv from 'dotenv';
-// import path from 'path';
-// dotenv.config({ path: path.resolve(__dirname, '.env') });
+const LOGIN_URL = (process.env.BASE_URL || 'https://smarterp.top/login').trim();
+const APP_ORIGIN = new URL(LOGIN_URL).origin;
+
+/** ملف جلسة دور owner — يُنتجه مشروع setup (tests/auth.setup.ts). */
+const OWNER_STATE = '.auth/owner.json';
 
 /**
  * @see https://playwright.dev/docs/test-configuration
  */
 export default defineConfig({
-  retries: process.env.CI ? 2 : 1,
   testDir: './tests',
-  /* Run tests in files in parallel */
-  fullyParallel: true,
-  /* Fail the build on CI if you accidentally left test.only in the source code. */
+
+  /**
+   * التشغيل تسلسلي عن قصد: البيئة المستهدفة إنتاجية خلف WAF حسّاس للمعدّل — التوازي
+   * أطلق حجب IP فعلياً (2026-06). ليس بسبب تعارض الجلسة: ملف الجلسة للقراءة فقط
+   * وتشاركه الـ workers بأمان.
+   */
+  fullyParallel: false,
+  workers: 1,
+
   forbidOnly: !!process.env.CI,
-  /* Retry on CI only */
-  retries: process.env.CI ? 2 : 0,
-  /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 1 : undefined,
-  /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: 'html',
-  /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
-  use: {
-    /* Base URL to use in actions like `await page.goto('')`. */
-    // baseURL: 'http://localhost:3000',
+  /** لا إعادة محاولة: تُخفي الهشاشة وتضاعف الطلبات ضدّ الـ WAF. */
+  retries: 0,
 
-    /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-    trace: 'on-first-retry',
-  },
+  /** مهلة الاختبار: البيئة الحيّة بطيئة (طلبات DataTables تصل خلال 8-15 ثانية أحياناً). */
+  timeout: 60_000,
+  expect: { timeout: 10_000 },
 
-  /* Configure projects for major browsers */
-  projects: [
-    {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
-    },
-
-    {
-      name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
-    },
-
-    {
-      name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
-    },
-
-    /* Test against mobile viewports. */
-    // {
-    //   name: 'Mobile Chrome',
-    //   use: { ...devices['Pixel 5'] },
-    // },
-    // {
-    //   name: 'Mobile Safari',
-    //   use: { ...devices['iPhone 12'] },
-    // },
-
-    /* Test against branded browsers. */
-    // {
-    //   name: 'Microsoft Edge',
-    //   use: { ...devices['Desktop Edge'], channel: 'msedge' },
-    // },
-    // {
-    //   name: 'Google Chrome',
-    //   use: { ...devices['Desktop Chrome'], channel: 'chrome' },
-    // },
+  reporter: [
+    ['list'],
+    ['html', { open: 'never' }],
+    ['junit', { outputFile: 'test-results/junit.xml' }],
   ],
 
-  /* Run your local dev server before starting the tests */
-  // webServer: {
-  //   command: 'npm run start',
-  //   url: 'http://localhost:3000',
-  //   reuseExistingServer: !process.env.CI,
-  // },
-});
+  use: {
+    baseURL: APP_ORIGIN,
+    /** أدلّة تشخيص عند الفشل — تعمل محلياً أيضاً (retries=0 يُبطل on-first-retry). */
+    trace: 'retain-on-failure',
+    screenshot: 'only-on-failure',
+    video: 'retain-on-failure',
+    actionTimeout: 15_000,
+    navigationTimeout: 45_000,
+  },
 
+  projects: [
+    /**
+     * يجدّد .auth/owner.json تلقائياً (ويتخطّى الدخول إن كانت الجلسة صالحة).
+     * يستخدم وصف Desktop Chrome كي يحمل الدخول user-agent متصفّح حقيقي؛ الافتراضي في
+     * headless يعلن "HeadlessChrome" وهو ما يرصده الـ WAF عند الدخول (لا في بقية الصفحات
+     * لأن مشروع chromium يستخدم الوصف نفسه أصلاً).
+     */
+    { name: 'setup', testMatch: /auth\.setup\.ts/, use: { ...devices['Desktop Chrome'] } },
+
+    {
+      name: 'chromium',
+      use: { ...devices['Desktop Chrome'], storageState: OWNER_STATE },
+      dependencies: ['setup'],
+      testIgnore: /auth\.setup\.ts/,
+    },
+
+    /**
+     * firefox/webkit معطّلان مؤقتاً: تشغيل نفس المجموعة ثلاث مرات يضاعف الحمل على
+     * الـ WAF بلا مكسب حالي. فعّليهما بعد الانتقال لمستأجر اختبار مُدرَج في allowlist.
+     */
+    // { name: 'firefox', use: { ...devices['Desktop Firefox'], storageState: OWNER_STATE },
+    //   dependencies: ['setup'], testIgnore: /auth\.setup\.ts/ },
+    // { name: 'webkit', use: { ...devices['Desktop Safari'], storageState: OWNER_STATE },
+    //   dependencies: ['setup'], testIgnore: /auth\.setup\.ts/ },
+  ],
+});

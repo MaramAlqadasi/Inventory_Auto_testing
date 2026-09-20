@@ -1,8 +1,20 @@
+# Node
+node_modules/
 
 # Playwright
-node_modules/
 /test-results/
 /playwright-report/
 /blob-report/
 /playwright/.cache/
-/playwright/.auth/
+
+# أسرار وجلسات — لا تُودَع في المستودع إطلاقاً
+.env
+.env.*
+!.env.example
+.auth/
+storage-state.json
+storage-state.*.json
+
+# ضوضاء أدوات ومخلّفات
+.playwright-mcp/
+*.backup
